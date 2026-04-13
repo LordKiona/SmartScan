@@ -12,7 +12,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartScan">
         <activity
-            android:name=".MainActivity"
+            android:name=".Item"
+            android:exported="false" />
+        <activity
+            android:name=".List"
+            android:exported="false" />
+        <activity
+            android:name=".Edit"
+            android:exported="false" />
+        <activity
+            android:name=".Gallery"
+            android:exported="false" />
+        <activity
+            android:name=".Camera"
+            android:exported="false" />
+        <activity
+            android:name=".Image_Result"
+            android:exported="false" />
+        <activity
+            android:name=".Start"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

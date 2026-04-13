@@ -1,5 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
+
+
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -38,10 +42,8 @@ android {
 dependencies {
 
     implementation("com.google.firebase:firebase-database:22.0.1")
-    implementation("com.google.mlkit:text-recognition:16.0.1")
-    implementation("com.google.mlkit:barcode-scanning:17.3.0")
-    implementation("com.google.mlkit:image-labeling:17.0.9")
 
+    implementation("com.google.firebase:firebase-analytics")
 
     implementation(libs.appcompat)
     implementation(libs.material)

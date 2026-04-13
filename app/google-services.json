@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "200440894012",
+    "project_id": "smartscan-2410e",
+    "storage_bucket": "smartscan-2410e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:200440894012:android:55a2635467958d43782939",
+        "android_client_info": {
+          "package_name": "com.example.smartscan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkCCcKrYmpbzOvLGwp-rLZqXSjtUERdco"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
