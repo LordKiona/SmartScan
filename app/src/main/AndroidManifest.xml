@@ -21,12 +21,6 @@
             android:name=".Edit"
             android:exported="false" />
         <activity
-            android:name=".Gallery"
-            android:exported="false" />
-        <activity
-            android:name=".Camera"
-            android:exported="false" />
-        <activity
             android:name=".Image_Result"
             android:exported="false" />
         <activity
