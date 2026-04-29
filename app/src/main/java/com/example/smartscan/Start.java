@@ -1,6 +1,10 @@
 package com.example.smartscan;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,4 +25,23 @@ public class Start extends AppCompatActivity {
             return insets;
         });
     }
+
+    public void OpenMainActivity_1(View view) {
+        Intent intent = new Intent(Start.this, MainActivity.class);
+        intent.putExtra("Reader_type","BarcodeReader");
+        startActivity(intent);
+    }
+
+    public void OpenMainActivity_2(View view) {
+        Intent intent = new Intent(Start.this, MainActivity.class);
+        intent.putExtra("Reader_type","ContentReader");
+        startActivity(intent);
+    }
+
+    public void OpenMainActivity_3(View view) {
+        Intent intent = new Intent(Start.this, MainActivity.class);
+        intent.putExtra("Reader_type","TextReader");
+        startActivity(intent);
+    }
+
 }
