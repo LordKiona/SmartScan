@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,10 +19,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.text.method.ScrollingMovementMethod;
 import com.example.smartscan.R;
 import com.example.smartscan.Start;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.barcode.BarcodeScanner;
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
 import com.google.mlkit.vision.barcode.BarcodeScanning;
+import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.label.ImageLabel;
 import com.google.mlkit.vision.label.ImageLabeler;
@@ -31,7 +38,10 @@ import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 
+import org.jspecify.annotations.NonNull;
+
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     Uri imageFileUri;
     ImageView imageView;
-    TextView textViewOutput;
+    TextView textViewSubText;
     String readerType;
 
 
@@ -62,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                             if (imageFileUri != null) {
 
                                 imageView.setImageURI(imageFileUri);
-                                textViewOutput.setText("");
+                                textViewSubText.setText("");
 
                                 try {
                                     InputImage image =
@@ -93,17 +103,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         imageView = findViewById(R.id.ImageViewMian);
-        textViewOutput = findViewById(R.id.TextViewSubText);
-
+        textViewSubText = findViewById(R.id.TextViewSubText);
+        textViewSubText.setMovementMethod(new ScrollingMovementMethod());
         // GET READER TYPE
         readerType = getIntent().getStringExtra("Reader_type");
 
         // SET TOP IMAGE
         if ("BarcodeReader".equals(readerType)) {
             imageView.setImageResource(R.drawable.barcode);
-        } else if ("ContextReader".equals(readerType)) {
+        }
+        else if ("ContentReader".equals(readerType)) {
             imageView.setImageResource(R.drawable.content);
-        } else {
+        }
+        else if ("TextReader".equals(readerType)) {
+            imageView.setImageResource(R.drawable.text);
+        }
+        else {
             imageView.setImageResource(R.drawable.text);
         }
     }
@@ -156,41 +171,72 @@ public class MainActivity extends AppCompatActivity {
                 TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
         recognizer.process(image)
-                .addOnSuccessListener(text ->
-                        textViewOutput.setText(text.getText()))
-                .addOnFailureListener(e ->
-                        textViewOutput.setText("Text failed"));
+                .addOnSuccessListener(result -> {
+                    String text = result.getText();
+
+                    if (text.isEmpty()) {
+                        textViewSubText.setText("No text found");
+                    } else {
+                        textViewSubText.setText(text);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    textViewSubText.setText("Text reading failed");
+                });
     }
 
     private void processBarcode(InputImage image) {
-        BarcodeScanner scanner = BarcodeScanning.getClient();
-
-        scanner.process(image)
-                .addOnSuccessListener(barcodes -> {
-                    if (!barcodes.isEmpty()) {
-                        textViewOutput.setText(barcodes.get(0).getRawValue());
-                    } else {
-                        textViewOutput.setText("No barcode found");
+        BarcodeScannerOptions options =
+                new BarcodeScannerOptions.Builder()
+                        .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS).build();
+        BarcodeScanner scanner = BarcodeScanning.getClient(options);
+        Task<java.util.List<Barcode>> result = scanner.process(image)
+                .addOnSuccessListener(new OnSuccessListener<List<Barcode>>() {
+                    @Override
+                    public void onSuccess(List<Barcode> barcodes) {
+                        textViewSubText.append(Html.fromHtml("<font color='navy'><b>Detected barcode:</b></font><br>", Html.FROM_HTML_MODE_LEGACY));
+                        String result = "";
+                        for (Barcode barcode : barcodes) {
+                            result = barcode.getRawValue();
+                            textViewSubText.append(result + "\n");
+                        }
+                        if (result.length() < 2) {
+                            textViewSubText.append(" Barcode not found.\n");
+                        }
                     }
                 })
-                .addOnFailureListener(e ->
-                        textViewOutput.setText("Barcode failed"));
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        textViewSubText.setText("Failed");
+                    }
+                });
     }
 
     private void processContent(InputImage image) {
+
         ImageLabeler labeler = ImageLabeling.getClient(
                 ImageLabelerOptions.DEFAULT_OPTIONS
         );
 
         labeler.process(image)
                 .addOnSuccessListener(labels -> {
+
+                    if (labels.isEmpty()) {
+                        textViewSubText.setText("No objects detected");
+                        return;
+                    }
+
                     StringBuilder result = new StringBuilder();
+
                     for (ImageLabel label : labels) {
                         result.append(label.getText()).append("\n");
                     }
-                    textViewOutput.setText(result.toString());
+
+                    textViewSubText.setText(result.toString());
                 })
-                .addOnFailureListener(e ->
-                        textViewOutput.setText("Image labeling failed"));
+                .addOnFailureListener(e -> {
+                    textViewSubText.setText("Image labeling failed");
+                });
     }
 }
