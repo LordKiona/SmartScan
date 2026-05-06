@@ -25,7 +25,7 @@
 
 
 
-        <TextView
+    <TextView
             android:id="@+id/TextViewSubText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -98,18 +98,34 @@
 
     <Button
         android:id="@+id/buttonReturn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="129dp"
+        android:layout_height="50dp"
 
         android:layout_marginStart="32dp"
 
-        android:layout_marginTop="128dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="92dp"
         android:onClick="Return"
         android:text="Return"
         android:textSize="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/EditText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ImageViewMian"
+        app:layout_constraintTop_toBottomOf="@+id/buttonOpenCamera"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/EditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="32dp"
+        android:onClick="EditText"
+        android:text="Edit Result"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonReturn"
+        app:layout_constraintTop_toBottomOf="@+id/buttonOpenGallery"
         tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>

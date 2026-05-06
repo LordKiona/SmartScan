@@ -20,8 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.text.method.ScrollingMovementMethod;
-import com.example.smartscan.R;
-import com.example.smartscan.Start;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -166,6 +165,34 @@ public class MainActivity extends AppCompatActivity {
         activityResultLauncher.launch(intent);
     }
 
+    public void EditText(View view) {
+        Intent intent = new Intent(this, EditActivity.class);
+
+        // TEXT
+        intent.putExtra("RESULT_TEXT",
+                textViewSubText.getText().toString());
+
+        // IMAGE
+        if (imageFileUri != null) {
+            intent.putExtra("IMAGE_URI", imageFileUri.toString());
+        }
+
+        editLauncher.launch(intent);
+    }
+    ActivityResultLauncher<Intent> editLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == RESULT_OK) {
+
+                            if (result.getData() != null) {
+                                String editedText =
+                                        result.getData().getStringExtra("EDITED_TEXT");
+
+                                textViewSubText.setText(editedText);
+                            }
+                        }
+                    });
     private void processText(InputImage image) {
         TextRecognizer recognizer =
                 TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
